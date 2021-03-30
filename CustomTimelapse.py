@@ -83,7 +83,7 @@ class CustomTimelapse(Script):
                 "send_photo_command":
                 {
                     "label": "Send camera command",
-                    "description": "Display the current photo number on the panel during the shots",
+                    "description": "Send a customisable G-code command for compatible printers",
                     "type": "bool",
                     "default_value": false
                 },
