@@ -38,7 +38,7 @@ class CustomTimelapse(Script):
                     "label": "Specify a return speed",
                     "description": "Set the value below",
                     "type": "bool",
-                    "default_value": false
+                    "default_value": true
                 },
                 "return_speed":
                 {
@@ -46,7 +46,8 @@ class CustomTimelapse(Script):
                     "description": "return speed in mm/minute as for the F gcode parameter.",
                     "type": "int",
                     "unit": "mm/m",
-                    "enabled": "enable_custom_return_speed"
+                    "enabled": "enable_custom_return_speed",
+                    "default_value": 9000,
                 },
                 "pause_length":
                 {
