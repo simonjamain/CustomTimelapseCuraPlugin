@@ -47,7 +47,7 @@ class CustomTimelapse(Script):
                     "type": "int",
                     "unit": "mm/m",
                     "enabled": "enable_custom_return_speed",
-                    "default_value": 9000,
+                    "default_value": 9000
                 },
                 "pause_length":
                 {
