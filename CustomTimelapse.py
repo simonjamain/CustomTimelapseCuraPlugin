@@ -24,21 +24,21 @@ class CustomTimelapse(Script):
                     "label": "GCODE for the first position(display position).",
                     "description": "GCODE to add before or after layer change.",
                     "type": "str",
-                    "default_value": "G0 Y235"
+                    "default_value": "G0 Y190"
                 },
                 "second_gcode":
                 {
                     "label": "GCODE for the second position(trigger position).",
                     "description": "GCODE to add before or after layer change.",
                     "type": "str",
-                    "default_value": "G0 X235"
+                    "default_value": "G0 X220"
                 },
                 "enable_custom_return_speed":
                 {
                     "label": "Specify a return speed",
                     "description": "Set the value below",
                     "type": "bool",
-                    "default_value": false
+                    "default_value": true
                 },
                 "return_speed":
                 {
@@ -46,14 +46,31 @@ class CustomTimelapse(Script):
                     "description": "return speed in mm/minute as for the F gcode parameter.",
                     "type": "int",
                     "unit": "mm/m",
-                    "enabled": "enable_custom_return_speed"
+                    "enabled": "enable_custom_return_speed",
+                    "default_value": 9000
                 },
                 "pause_length":
                 {
                     "label": "Pause length",
-                    "description": "How long to wait (in ms) after camera was triggered.",
+                    "description": "How long to wait (in ms) after camera button was pressed.",
                     "type": "int",
-                    "default_value": 700,
+                    "default_value": 250,
+                    "minimum_value": 0,
+                    "unit": "ms"
+                },
+                "camera_photo_gcode":
+                {
+                    "label": "GCODE for the camera photo release position.",
+                    "description": "GCODE to add after layer change.",
+                    "type": "str",
+                    "default_value": "G0 X215"
+                },
+                "camera_photo_pause_length":
+                {
+                    "label": "Pause length",
+                    "description": "How long to wait (in ms) after camera button was released.",
+                    "type": "int",
+                    "default_value": 1000,
                     "minimum_value": 0,
                     "unit": "ms"
                 },
@@ -70,7 +87,7 @@ class CustomTimelapse(Script):
                     "description": "How much to retract the filament.",
                     "unit": "mm",
                     "type": "float",
-                    "default_value": 5,
+                    "default_value": 8,
                     "enabled": "enable_retraction"
                 },
                 "display_photo_number":
@@ -114,6 +131,9 @@ class CustomTimelapse(Script):
         first_gcode = self.getSettingValueByKey("first_gcode")
         second_gcode = self.getSettingValueByKey("second_gcode")
         pause_length = self.getSettingValueByKey("pause_length")
+        # camera photo add by kuili@55239610@qq.com
+        camera_photo_gcode = self.getSettingValueByKey("camera_photo_gcode")
+        camera_photo_pause_length = self.getSettingValueByKey("camera_photo_pause_length")
         enable_custom_return_speed = self.getSettingValueByKey("enable_custom_return_speed")
         return_speed = self.getSettingValueByKey("return_speed")
         enable_retraction = self.getSettingValueByKey("enable_retraction")
@@ -161,14 +181,20 @@ class CustomTimelapse(Script):
                         if send_photo_command:
                             gcode_to_append += trigger_command + " ;Snap Photo\n"
 
+                        # camera photo add by kuili@55239610@qq.com
+                        gcode_to_append += "; STEP 5 : Move the head to \"camera\" position and wait\n"
+                        gcode_to_append += camera_photo_gcode + ";Switch to relative positioning\n"
+                        gcode_to_append += self.putValue(M = 400) + ";Wait for moves to finish\n"
+                        gcode_to_append += self.putValue(G = 4, P = camera_photo_pause_length) + ";Wait for camera photo\n"
+
                         # TODO skip steps 5 and 6 for the last layer
-                        gcode_to_append += "; STEP 5 : Move the head back in its original place\n"
+                        gcode_to_append += "; STEP 6 : Move the head back in its original place\n"
                         if enable_custom_return_speed:
                             gcode_to_append += self.putValue(G = 0, X = x, Y = y, F = return_speed) + "\n"
                         else:
                             gcode_to_append += self.putValue(G = 0, X = x, Y = y) + "\n"
 
-                        gcode_to_append += "; STEP 6 : Move the head height back down\n"
+                        gcode_to_append += "; STEP 7 : Move the head height back down\n"
                         gcode_to_append += self.putValue(G = 91) + ";Switch to relative positioning\n"
                         gcode_to_append += self.putValue(G = 0, Z = -1) + ";Restore Z axis position\n"
                         gcode_to_append += self.putValue(G = 90) + ";Switch back to absolute positioning\n"
