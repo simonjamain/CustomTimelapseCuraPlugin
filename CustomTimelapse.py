@@ -33,6 +33,13 @@ class CustomTimelapse(Script):
                     "type": "str",
                     "default_value": "G0 X235"
                 },
+                "third_gcode":
+                {
+                    "label": "GCODE for the third position(pause position).",
+                    "description": "GCODE to add before or after layer change.",
+                    "type": "str",
+                    "default_value": "G0 X225"
+                },
                 "enable_custom_return_speed":
                 {
                     "label": "Specify a return speed",
@@ -113,6 +120,7 @@ class CustomTimelapse(Script):
         activate_plugin = self.getSettingValueByKey("activate_plugin")
         first_gcode = self.getSettingValueByKey("first_gcode")
         second_gcode = self.getSettingValueByKey("second_gcode")
+        third_gcode = self.getSettingValueByKey("third_gcode")
         pause_length = self.getSettingValueByKey("pause_length")
         enable_custom_return_speed = self.getSettingValueByKey("enable_custom_return_speed")
         return_speed = self.getSettingValueByKey("return_speed")
@@ -154,6 +162,7 @@ class CustomTimelapse(Script):
                         gcode_to_append += "; STEP 3 : Move the head to \"display\" position and wait\n"
                         gcode_to_append += first_gcode + ";GCODE for the first position(display position)\n"
                         gcode_to_append += second_gcode + ";GCODE for the second position(trigger position)\n"
+                        gcode_to_append += third_gcode + ";GCODE for the third position(pause position)\n"
                         gcode_to_append += self.putValue(M = 400) + ";Wait for moves to finish\n"
                         gcode_to_append += self.putValue(G = 4, P = pause_length) + ";Wait for camera\n"
 
