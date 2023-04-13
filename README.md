@@ -1,3 +1,9 @@
+This repo was forked from simonjamain: https://github.com/simonjamain/CustomTimelapseCuraPlugin
+What I enabled was an option to have a second X-Axis position in case you need to press and release the remote button with which you are taking timelapse images.
+You can see third or pause position in the script. I suggest setting it around 20 less than second position, so that the printer head would click and release the button, and pause after that.
+
+Below is the original README:
+
 Enable to do awesome timelapse using a method similar to this video: https://www.youtube.com/watch?v=UqZ8Um5MZEA but without using octoprint !
 I'll soon add a complete tutorial including the hardware (probably in french) for which I'll add the link here.
 
